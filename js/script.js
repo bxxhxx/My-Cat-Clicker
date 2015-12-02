@@ -7,12 +7,64 @@ var Cat = function(name, imageURL) {
     return obj;
 };
 
-Cat.prototype.clicker = function () {
-        this.score += 1;
-        //document.getElementById(this.name + "Score").textContent = this.score;
-    }
+Cat.prototype.clicker = function() {
+    this.score += 1;
+    //document.getElementById(this.name + "Score").textContent = this.score;
+}
 
-var cat1 = Cat("Shelly", "images/cat1.jpg");
+var bigList = [];
+
+var catNames = ['Shelly', 'Kelly', 'Bob', 'Joe', 'Sweet'];
+
+for (i = 0; i < 5; i++) {
+    var catImageURL = 'images/cat' + (i + 1) + '.jpg';
+    var nextCat = Cat(catNames[i], catImageURL);
+    bigList.push(nextCat);
+}
+
+var currentCat;
+var nameHTML = document.getElementById('name');
+var scoreHTML = document.getElementById('score');
+var imageURLHTML = document.getElementById('imageURL');
+
+imageURLHTML.addEventListener('click', function(e) {
+    currentCat.score += 1;
+    scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
+})
+
+var load = function(arrayPosition) {
+    currentCat = bigList[arrayPosition];
+
+    nameHTML.textContent = currentCat.name;
+
+    scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
+
+    imageURLHTML.src = currentCat.imageURL;
+
+}
+
+var listHTML = document.getElementById('list');
+
+for (i = 0; i < 5; i++) {
+    var catListItem = document.createElement('li');
+    catListItem.textContent = bigList[i].name;
+    listHTML.appendChild(catListItem);
+    var currentListItem = listHTML.lastChild;
+    currentListItem.addEventListener('click', (function(icopy) {
+        return function() {
+            load(icopy);
+        };
+    })(i));
+};
+
+
+
+
+
+
+
+
+/*var cat1 = Cat("Shelly", "images/cat1.jpg");
 
 var cat1NameHTML = document.getElementById('cat1Name');
 cat1NameHTML.textContent = cat1.name;

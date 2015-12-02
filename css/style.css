@@ -1,6 +1,29 @@
-
+.container {
+    width: 640px;
+    margin: 0 auto;
+}
 
 .center {
-	text-align: center;
+    width: 200px;
+    margin: 0 auto;
+    text-align: left;
+}
 
+h2 {
+    text-align: center;
+}
+
+#name {
+    text-align: left;
+}
+
+#score {
+    text-align: right;
+    display: inline-block;
+}
+
+#imageURL {
+    display: block;
+    width: 640px;
+    margin: 0 auto;
 }
