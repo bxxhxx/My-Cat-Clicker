@@ -1,129 +1,98 @@
-//create prototype
-var Cat = function(name, imageURL) {
-    var obj = Object.create(Cat.prototype);
-    obj.name = name;
-    obj.imageURL = imageURL;
-    obj.score = 0;
-    return obj;
-};
+$(function() {
+            var model = {
 
-Cat.prototype.clicker = function() {
-    this.score += 1;
-    //document.getElementById(this.name + "Score").textContent = this.score;
-}
+                init: function() {
 
-var bigList = [];
+                    var Cat = function(name, imageURL) {
+                        var obj = Object.create(Cat.prototype);
+                        obj.name = name;
+                        obj.imageURL = imageURL;
+                        obj.score = 0;
+                        return obj;
+                    };
 
-var catNames = ['Shelly', 'Kelly', 'Bob', 'Joe', 'Sweet'];
+                    Cat.prototype.clicker = function() {
+                        this.score += 1;
+                    }
 
-for (i = 0; i < 5; i++) {
-    var catImageURL = 'images/cat' + (i + 1) + '.jpg';
-    var nextCat = Cat(catNames[i], catImageURL);
-    bigList.push(nextCat);
-}
+                    var catNames = ['Shelly', 'Kelly', 'Bob', 'Joe', 'Sweet'];
 
-var currentCat;
-var nameHTML = document.getElementById('name');
-var scoreHTML = document.getElementById('score');
-var imageURLHTML = document.getElementById('imageURL');
+                    for (i = 0; i < 5; i++) {
+                        var catImageURL = 'images/cat' + (i + 1) + '.jpg';
+                        var nextCat = Cat(catNames[i], catImageURL);
+                        this.bigList.push(nextCat);
+                    }
+                },
 
-imageURLHTML.addEventListener('click', function(e) {
-    currentCat.score += 1;
-    scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
-})
+                currentCat: {},
+                bigList: []
+            };
 
-var load = function(arrayPosition) {
-    currentCat = bigList[arrayPosition];
 
-    nameHTML.textContent = currentCat.name;
+            var octopus = {
 
-    scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
+                init: function() {
+                    model.init();
+                    view.init();
+                },
 
-    imageURLHTML.src = currentCat.imageURL;
+                catTicker: function(i) {
+                    return model.bigList[i].name;
 
-}
+                },
 
-var listHTML = document.getElementById('list');
+                score: function() {
+                    model.currentCat.score += 1;
+                    return model.currentCat.score;
 
-for (i = 0; i < 5; i++) {
-    var catListItem = document.createElement('li');
-    catListItem.textContent = bigList[i].name;
-    listHTML.appendChild(catListItem);
-    var currentListItem = listHTML.lastChild;
-    currentListItem.addEventListener('click', (function(icopy) {
-        return function() {
-            load(icopy);
+                },
+
+            load: function(arrayPosition) {
+                model.currentCat = model.bigList[arrayPosition];
+                view.load(model.currentCat);
+
+            }
         };
-    })(i));
-};
 
 
+        var view = {
+            nameHTML: document.getElementById('name'),
+            scoreHTML: document.getElementById('score'),
+            imageURLHTML: document.getElementById('imageURL'),
 
+            init: function() {
+                var listHTML = document.getElementById('list');
 
+                for (i = 0; i < 5; i++) {
+                    var catListItem = document.createElement('li');
+                    catListItem.textContent = octopus.catTicker(i);
+                    listHTML.appendChild(catListItem);
+                    var currentListItem = listHTML.lastChild;
+                    currentListItem.addEventListener('click', (function(icopy) {
+                        return function() {
+                            octopus.load(icopy);
+                        };
+                    })(i));
+                }
 
+                this.imageURLHTML.addEventListener('click', function(e) {
+                    var newScore = octopus.score();
+                    //console.log(this);
+                    view.scoreHTML.textContent = 'Number of Clicks: ' + newScore;
+                });
+            },
 
+            load: function(currentCat) {
+                //MIGRTE TO VIEW
+                this.nameHTML.textContent = currentCat.name;
 
+                this.scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
 
-/*var cat1 = Cat("Shelly", "images/cat1.jpg");
+                this.imageURLHTML.src = currentCat.imageURL;
 
-var cat1NameHTML = document.getElementById('cat1Name');
-cat1NameHTML.textContent = cat1.name;
+            }
 
-var cat1ScoreHTML = document.getElementById('cat1Score');
-cat1ScoreHTML.textContent = 'Number of Clicks: ' + cat1.score;
+        };
 
-var cat1URLHTML = document.getElementById('cat1URL');
-cat1URLHTML.src = cat1.imageURL;
-
-cat1URLHTML.addEventListener('click', function(e) {
-	cat1.clicker();
-	cat1ScoreHTML.textContent = 'Number of Clicks: ' + cat1.score;
-}, false);
-
-
-var cat2 = Cat("Kelly", "images/cat2.jpg");
-
-var cat2NameHTML = document.getElementById('cat2Name');
-cat2NameHTML.textContent = cat2.name;
-
-var cat2ScoreHTML = document.getElementById('cat2Score');
-cat2ScoreHTML.textContent = 'Number of Clicks: ' + cat2.score;
-
-var cat2URLHTML = document.getElementById('cat2URL');
-cat2URLHTML.src = cat2.imageURL;
-
-cat2URLHTML.addEventListener('click', function(e) {
-	cat2.clicker();
-	cat2ScoreHTML.textContent = 'Number of Clicks: ' + cat2.score;
-}, false);
-
-
-
-
-/*var catDivMaker = function(catItem) {
-    var catCode;
-    var divOpen = '<div id="' + catItem.name + '">';
-    var nameHeader = '<h3>' + catItem.name + '</h3>';
-    var score = '<h3 id="' + catItem.name + 'Score">0</h3>';
-    var image = '< a href = "#" >
-        < img id = "'cat1'"
-    src = "images/cat1.jpg" / >
-        < /a>
-
-}*/
-
-
-
-/*var score = 0;
-
-document.getElementById('score').textContent = score;
-
-var cat = document.getElementById('cat');
-
-cat.addEventListener('click', function() {
-
-    score = score + 1;
-    document.getElementById('score').textContent = score;
-
-
-}, false);*/
+        octopus.init();
+    });
