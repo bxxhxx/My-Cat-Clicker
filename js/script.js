@@ -24,7 +24,8 @@ var model = {
     },
 
     currentCat: {},
-    bigList: []
+    bigList: [],
+    admin: false
 };
 
 
@@ -36,6 +37,7 @@ var octopus = {
         model.currentCat = model.bigList[0];
         viewP1.init();
         viewP2.init();
+        viewP3.init();
     },
 
     catTicker: function(i) {
@@ -52,11 +54,28 @@ var octopus = {
     load: function(catObject) {
         model.currentCat = catObject;
         viewP2.render(model.currentCat);
+        viewP3.render();
 
     },
 
     currentCat: function() {
         return model.currentCat;
+    },
+
+    getAdmin: function() {
+        return model.admin;
+    },
+
+    setAdmin: function(boolean) {
+        model.admin = boolean;
+        console.log(boolean);
+    },
+
+    update: function() {
+        //console.log(viewP3.formNameHTML.value);
+        model.currentCat.name = viewP3.formNameHTML.value;
+        model.currentCat.imageURL = viewP3.formImgURLHTML.value;
+        model.currentCat.score = parseInt(viewP3.formClicksHTML.value, 10);
     }
 };
 
@@ -69,6 +88,7 @@ var viewP1 = {
     },
 
     render: function() {
+        this.listHTML.innerHTML = '';
         for (i = 0; i < 5; i++) {
             var catListItem = document.createElement('li');
             var cat = octopus.catTicker(i);
@@ -96,16 +116,73 @@ var viewP2 = {
             var newScore = octopus.score();
             //console.log(this);
             viewP2.scoreHTML.textContent = 'Number of Clicks: ' + newScore;
+            viewP3.render();
         });
 
         this.render(octopus.currentCat());
     },
 
     render: function(currentCat) {
+
+        var currentCat = octopus.currentCat();
         this.nameHTML.textContent = currentCat.name;
         this.scoreHTML.textContent = 'Number of Clicks: ' + currentCat.score;
         this.imageURLHTML.src = currentCat.imageURL;
 
+
+    }
+};
+
+var viewP3 = {
+
+    init: function() {
+        this.adminHTML = document.getElementById('admin');
+        this.adminFormHTML = document.getElementById('adminForm');
+        this.formNameHTML = document.getElementById('formName');
+        this.formImgURLHTML = document.getElementById('formImgURL');
+        this.formClicksHTML = document.getElementById('formClicks');
+        this.cancelHTML = document.getElementById('cancel');
+        this.saveHTML = document.getElementById('save');
+        this.adminHTML.addEventListener('click', function(e) {
+            octopus.setAdmin(true);
+            viewP3.render();
+
+        });
+        this.cancelHTML.addEventListener('click', function(e) {
+            octopus.setAdmin(false);
+            viewP3.render();
+            e.preventDefault();
+
+        });
+        this.saveHTML.addEventListener('click', function(e) {
+
+            octopus.update();
+            octopus.setAdmin(false);
+            viewP3.render();
+            viewP2.render();
+            viewP1.render();
+            //preventDefault();
+            //stopPropagation();
+            //console.log("help");
+            e.preventDefault();
+        }, false);
+
+
+        this.render();
+
+    },
+
+    render: function() {
+        this.formNameHTML.value = octopus.currentCat().name;
+        this.formImgURLHTML.value = octopus.currentCat().imageURL;
+        this.formClicksHTML.value = octopus.currentCat().score;
+        if (octopus.getAdmin() === true) {
+            this.adminFormHTML.style.display = "block";
+
+        } else {
+            this.adminFormHTML.style.display = "none";
+
+        }
     }
 };
 
